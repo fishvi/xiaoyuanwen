@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load static thumbnail %}
+
+{% block title %}{{ object.username }} - {{ block.super }}{% endblock %}
+
+{% block css %}
+    <link href="{% static 'css/user_profile.css' %}" rel="stylesheet">
+{#  <script src="https://kit.fontawesome.com/" crossorigin="anonymous"></script>  替换自己的kit，否则图标丢失#}
+{% endblock css %}
+
+{% block content %}
+    <div class="row">
+        <div class="profile-picture">
+            {% thumbnail object.picture "x180" as im %}
+                <img src="{{ im.url }}" class="user-image pull-left" style="border-radius: 50%;" alt="用户头像">
+            {% empty %}
+                <img src="{% static 'img/user.png' %}" class="user-image pull-left" style="border-radius: 50%;" height="180px" alt="没有头像"/>
+            {% endthumbnail %}
+        </div>
+
+        <div class="col-md-7">
+            <div class="card card-body"><p>{{ object.introduction }}</p></div>
+        </div>
+        <div class="col-md-3">
+            <i class="fas fa-user-circle" aria-hidden="true"></i>&nbsp;{{ object.get_profile_name }}<br/>
+            <i class="fas fa-envelope" aria-hidden="true"></i><a class="email" href="mailto:{{ object.email }}">&nbsp;{{ object.email }}</a><br/>
+            {% if object.gender %}
+                <i class="fas fa-venus-mars" aria-hidden="true"></i>&nbsp;{{ object.get_gender_display }}<br/>
+            {% endif %}
+            {% if object.stu_id %}
+                <i class="fas fa-address-card" aria-hidden="true"></i>&nbsp;{{ object.stu_id }}<br/>
+            {% endif %}
+            {% if object.grade %}
+                <i class="fas fa-user-graduate" aria-hidden="true"></i>&nbsp;{{ object.grade }}<br/>
+            {% endif %}
+            {% if object.college %}
+                <i class="fas fa-university" aria-hidden="true"></i>&nbsp;{{ object.get_college_display }}<br/>
+            {% endif %}
+            {% if object.location %}
+                <i class="fas fa-home" aria-hidden="true"></i>&nbsp;{{ object.get_location_display }}<br/>
+            {% endif %}
+            <div class="mb-2"></div>
+            <!--自己的页面显示更新按钮-->
+            {% if request.user.username == object.username %}
+                <a class="btn btn-primary" href="{% url 'users:update' %}">更新信息</a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="clear mb-3"></div>
+
+    {% if request.user.username == object.username %}
+        <!-- Data tiles -->
+        <div class="row tile_count">
+            <div class="col-md-2 col-sm-3 col-xs-4 tile_stats_count">
+                <p class="fa fa-code"> 动态</p>
+                <div class="count">{{ moments_num }}</div>
+            </div>
+            <div class="col-md-2 col-sm-3 col-xs-4 tile_stats_count">
+                <p class="fa fa-key"> 文章</p>
+                <div class="count">{{ article_num }}</div>
+            </div>
+            <div class="col-md-2 col-sm-3 col-xs-4 tile_stats_count">
+                <p class="fa fa-comments"> 评论</p>
+                <div class="count">{{ comment_num }}</div>
+            </div>
+            <div class="col-md-2 col-sm-3 col-xs-4 tile_stats_count">
+                <p class="fa fa-question-circle"> 提问</p>
+                <div class="count">{{ question_num }}</div>
+            </div>
+            <div class="col-md-2 col-sm-3 col-xs-4 tile_stats_count">
+                <p class="fa fa-keyboard"> 回答</p>
+                <div class="count">{{ answer_num }}</div>
+            </div>
+            <div class="col-md-2 col-sm-3 col-xs-4 tile_stats_count">
+                <p class="fa fa-navicon"> 互动</p>
+                <div class="count">{{ interaction_num }}</div>
+            </div>
+        </div>
+        <!-- /data tiles -->
+    {% endif %}
+{% endblock content %}

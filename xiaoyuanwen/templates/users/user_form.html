@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load static crispy_forms_tags thumbnail %}
+
+{% block title %}用户信息 - {{ block.super }}{% endblock %}
+
+{% block css %}
+    <link href="{% static 'css/user_form.css' %}" rel="stylesheet">
+{% endblock css %}
+
+{% block content %}
+
+    <div class="row profile">
+        <div class="col-md-3">
+            <div style="font-size: 2em; font-weight: bold">&emsp;&nbsp;&nbsp;{{ user.username }}</div>
+            <div class="profile-picture">
+                {% thumbnail object.picture "x180" as im %}
+                    <img src="{{ im.url }}" class="user-image pull-left" style="border-radius: 50%;" alt="用户头像">
+                {% empty %}
+                    <img src="{% static 'img/user.png' %}" class="user-image pull-left" style="border-radius: 50%;" height="180px" alt="没有头像"/>
+                {% endthumbnail %}
+            </div>
+        </div>
+
+        <div class="col-md-9">
+            <form enctype="multipart/form-data" class="form-horizontal" method="post" action="{% url 'users:update' %}">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="control-group">
+                    <div class="controls">
+                        <button type="submit" class="btn btn-primary">更新</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+{% endblock %}
